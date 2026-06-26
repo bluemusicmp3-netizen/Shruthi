@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Happy Birthday Yusuf 💙</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: radial-gradient(circle at top, #003366, #001a33);
+    color: white;
+    text-align: center;
+    overflow-x: hidden;
+}
+
+/* Falling Flowers */
+.flower {
+    position: fixed;
+    top: -50px;
+    font-size: 20px;
+    animation: fall linear infinite;
+    opacity: 0.7;
+}
+@keyframes fall {
+    to {
+        transform: translateY(110vh);
+    }
+}
+
+/* Glow Background */
+body::before {
+    content: "";
+    position: fixed;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(0,170,255,0.2), transparent);
+    animation: moveGlow 10s linear infinite;
+}
+@keyframes moveGlow {
+    0% {transform: translate(-25%, -25%);}
+    50% {transform: translate(0%, 0%);}
+    100% {transform: translate(-25%, -25%);}
+}
+
+/* Pages */
+.page {
+    height: 100vh;
+    display: none;
+    padding: 40px;
+    animation: fadeIn 1s ease;
+}
+.active { display: block; }
+
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+/* Glow Text */
+h1, h2 {
+    text-shadow: 0 0 10px #00aaff, 0 0 20px #00aaff;
+}
+.glow-name {
+    color: #00cfff;
+    text-shadow: 0 0 15px #00cfff, 0 0 30px #00cfff;
+}
+
+/* Buttons */
+button {
+    padding: 12px 20px;
+    border: none;
+    background: #0088cc;
+    color: white;
+    border-radius: 12px;
+    cursor: pointer;
+    margin-top: 15px;
+    box-shadow: 0 0 10px #00aaff;
+}
+button:hover {
+    box-shadow: 0 0 25px #00ccff;
+    transform: scale(1.05);
+}
+
+/* Letter */
+.letter {
+    background: #fdf6e3;
+    color: black;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 700px;
+    margin: auto;
+    min-height: 200px;
+}
+
+/* Cards */
+.card {
+    background: rgba(255,255,255,0.1);
+    padding: 20px;
+    margin: 10px;
+    border-radius: 15px;
+    cursor: pointer;
+    box-shadow: 0 0 10px #00aaff;
+}
+
+/* Cake */
+.cake { font-size: 100px; }
+
+/* Apology */
+.apology-box {
+    display:none;
+    margin-top:20px;
+    background: rgba(255,255,255,0.1);
+    padding:20px;
+    border-radius:15px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Background Music -->
+<audio autoplay loop>
+  <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_115b9b0a52.mp3" type="audio/mpeg">
+</audio>
+
+<!-- PAGE 1 -->
+<div class="page active" id="page1">
+    <h1>Enter Secret Pin 💙</h1>
+    <p>Hint: yours day</p>
+    <input type="password" id="pin">
+    <br>
+    <button onclick="checkPin()">Enter</button>
+    <p id="error"></p>
+</div>
+
+<!-- PAGE 2 -->
+<div class="page" id="page2">
+    <h2>💌 A Letter For <span class="glow-name">Yusuf</span></h2>
+    <div class="letter" id="typedLetter"></div>
+    <button onclick="nextPage(3)">Next ➡</button>
+</div>
+
+<!-- PAGE 3 -->
+<div class="page" id="page3">
+    <h2>🎁 Tap Your Gift</h2>
+    <div onclick="playSong()" style="font-size:90px;">🎁</div>
+    <p id="songMsg"></p>
+    <button onclick="nextPage(4)">Next ➡</button>
+</div>
+
+<!-- PAGE 4 -->
+<div class="page" id="page4">
+    <h2>💌 Wishes</h2>
+    <div class="card" onclick="showWish(1)">🏏</div>
+    <div class="card" onclick="showWish(2)">🏍</div>
+    <div class="card" onclick="showWish(3)">🐶</div>
+    <div class="card" onclick="showWish(4)">✨</div>
+    <p id="wishText"></p>
+    <button onclick="nextPage(5)">Next ➡</button>
+</div>
+
+<!-- PAGE 5 -->
+<div class="page" id="page5">
+    <h2>💙 One More Thing...</h2>
+    <button onclick="openApology()">Tap to Open 💌</button>
+    <div id="apologyBox" class="apology-box"></div>
+    <button onclick="nextPage(6)">Next ➡</button>
+</div>
+
+<!-- PAGE 6 -->
+<div class="page" id="page6">
+    <h2>🎂 A Cake Baked By Me With Love</h2>
+    <div class="cake">🎂🕯</div>
+    <button onclick="blowCake()">Blow Candle</button>
+    <p id="cakeMsg"></p>
+    <button onclick="nextPage(7)">Next ➡</button>
+</div>
+
+<!-- PAGE 7 -->
+<div class="page" id="page7">
+    <h1>💙 Enjoy Your Day Yusuf 💙</h1>
+    <p>From Shruthi ✨</p>
+</div>
+
+<script>
+
+/* Falling flowers generator */
+setInterval(() => {
+    let flower = document.createElement("div");
+    flower.className = "flower";
+    flower.innerHTML = "🌸";
+    flower.style.left = Math.random() * 100 + "vw";
+    flower.style.animationDuration = (3 + Math.random() * 5) + "s";
+    document.body.appendChild(flower);
+
+    setTimeout(() => flower.remove(), 8000);
+}, 300);
+
+/* Typing effect */
+function typeText(element, text, speed=20) {
+    let i = 0;
+    element.innerHTML = "";
+    function typing() {
+        if (i < text.length) {
+            element.innerHTML += text.charAt(i);
+            i++;
+            setTimeout(typing, speed);
+        }
+    }
+    typing();
+}
+
+/* Letter text */
+const letterText = `I don’t really know how to put everything into perfect words but I just wanted to share something.
+
+I m really grateful that life brought me to APSA and that I got to know you. You have been a part of some of my best school memories and I will always value that.
+
+There were times I could not express things properly but the bond we share is something really rare and genuine. Even now I m really happy we have each other's support. Maybe we see this as friendship….. and sometimes we might even argue whether its love or not. But for me its something more than just a label. Its care,affection and a kind of connection that feels pure and genuine…. something calm, respectful and beyond expectations.You will always be that kutty yusuf to me smiling so innocently no matter how much you grow. Maybe with time everything can change but the care and respect I have for you will always remain.
+
+I m not sure how our friendship will go from here but I just want you to know… whenever you feel heavy or need someone to talk to you can always come to me. I will be there. Even after so many fights I still value what we share… because somehow we always come back and choose to understand each other again.I act like I m tired of you but if you actually stop talking I will be the first one to come back. And if I ever do something that hurts you please don’t hesitate to tell me or even fight with me… you have that right. Don’t get too proud I value you this much only because I like you a little (Note:very little)
+
+No matter where life takes us, you will always be someone special to me. Stay happy, keep chasing your dreams and have a beautiful year ahead.
+Happy Birthday Mahh💙Stay shine✨️`;
+
+const apologyText = `I m really sorry about the gift. It wasn’t about the money I just wanted to do something special for you…especially since it was my first gift. It didn’t go as planned I didn’t mean for it to turn into a fight. Next time… I’ll make it way more than you expect. Anyway just know this next time the gift is going to be way more than you expect and this time nothings going to go wrong…I ll make sure of it.`;
+
+/* Navigation */
+function nextPage(num) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById("page"+num).classList.add('active');
+
+    if(num === 2){
+        typeText(document.getElementById("typedLetter"), letterText);
+    }
+}
+
+/* PIN */
+function checkPin() {
+    let pin = document.getElementById("pin").value;
+    if(pin === "0307") {
+        nextPage(2);
+    } else {
+        document.getElementById("error").innerText = "Wrong Pin!";
+    }
+}
+
+/* Gift */
+function playSong() {
+    window.open("https://open.spotify.com/track/5cfKBuE5XKtlaNOVjQwA9H?si=jbzolTEtTC-0SnVJqsihrg");
+    document.getElementById("songMsg").innerText = "Playing your song 💙";
+}
+
+/* Wishes */
+function showWish(num) {
+    let text = [
+        "",
+        "Perfect coffee, slow mornings, and exactly the peace you deserve",
+        "Love that is consistent, warm, and completely certain of you",
+        "A year so good it makes every year before feel like the warm-up",
+        "May every single day bring you something that makes your soul light up"
+    ];
+    document.getElementById("wishText").innerText = text[num];
+}
+
+/* Cake */
+function blowCake() {
+    document.getElementById("cakeMsg").innerText = "✨ Enjoy your day 💙";
+}
+
+/* Apology typing */
+function openApology() {
+    let box = document.getElementById("apologyBox");
+    box.style.display = "block";
+    typeText(box, apologyText, 30);
+}
+
+</script>
+
+</body>
+</html>
